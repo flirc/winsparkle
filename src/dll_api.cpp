@@ -205,7 +205,7 @@ WIN_SPARKLE_API void __cdecl win_sparkle_set_registry_path(const char *path)
 {
     try
     {
-        Settings::SetRegistryPath(path);
+//        Settings::SetRegistryPath(path);
     }
     CATCH_ALL_EXCEPTIONS
 }

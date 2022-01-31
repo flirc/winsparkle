@@ -247,9 +247,9 @@ public:
     static win_sparkle_config_methods_t GetDefaultConfigMethods()
     {
         win_sparkle_config_methods_t defaultConfigMethods;
-        defaultConfigMethods.config_read = &RegistryRead;
-        defaultConfigMethods.config_write = &RegistryWrite;
-        defaultConfigMethods.config_delete = &RegistryDelete;
+//        defaultConfigMethods.config_read = &RegistryRead;
+//        defaultConfigMethods.config_write = &RegistryWrite;
+//        defaultConfigMethods.config_delete = &RegistryDelete;
         defaultConfigMethods.user_data = NULL;
         return defaultConfigMethods;
     }
@@ -355,9 +355,9 @@ private:
     static void DoWriteConfigValue(const char *name, const wchar_t *value);
     static std::wstring DoReadConfigValue(const char *name);
 
-    static int __cdecl RegistryRead(const char *name, wchar_t *buf, size_t len, void *);
-    static void __cdecl RegistryWrite(const char *name, const wchar_t *value, void *);
-    static void __cdecl RegistryDelete(const char *name, void *);
+//    static int __cdecl RegistryRead(const char *name, wchar_t *buf, size_t len, void *);
+//    static void __cdecl RegistryWrite(const char *name, const wchar_t *value, void *);
+//    static void __cdecl RegistryDelete(const char *name, void *);
 
 private:
     // guards the variables below:

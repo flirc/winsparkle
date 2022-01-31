@@ -180,133 +180,133 @@ std::string Settings::GetDefaultRegistryPath()
     return s;
 }
 
-void __cdecl Settings::RegistryWrite(const char *name, const wchar_t *value, void *)
-{
-    const std::string subkey = Settings::GetRegistryPath();
+//void __cdecl Settings::RegistryWrite(const char *name, const wchar_t *value, void *)
+//{
+//    const std::string subkey = Settings::GetRegistryPath();
+//
+//    HKEY key;
+//    LONG result = RegCreateKeyExA
+//                  (
+//                      HKEY_CURRENT_USER,
+//                      subkey.c_str(),
+//                      0,
+//                      NULL,
+//                      REG_OPTION_NON_VOLATILE,
+//                      KEY_SET_VALUE,
+//                      NULL,
+//                      &key,
+//                      NULL
+//                  );
+//    if (result != ERROR_SUCCESS)
+//        throw Win32Exception("Cannot write settings to registry");
+//
+//    result = RegSetValueEx
+//             (
+//                 key,
+//                 AnsiToWide(name).c_str(),
+//                 0,
+//                 REG_SZ,
+//                 (const BYTE*)value,
+//                 (DWORD)((wcslen(value) + 1) * sizeof(wchar_t))
+//             );
+//
+//    RegCloseKey(key);
+//
+//    if (result != ERROR_SUCCESS)
+//        throw Win32Exception("Cannot write settings to registry");
+//}
 
-    HKEY key;
-    LONG result = RegCreateKeyExA
-                  (
-                      HKEY_CURRENT_USER,
-                      subkey.c_str(),
-                      0,
-                      NULL,
-                      REG_OPTION_NON_VOLATILE,
-                      KEY_SET_VALUE,
-                      NULL,
-                      &key,
-                      NULL
-                  );
-    if (result != ERROR_SUCCESS)
-        throw Win32Exception("Cannot write settings to registry");
-
-    result = RegSetValueEx
-             (
-                 key,
-                 AnsiToWide(name).c_str(),
-                 0,
-                 REG_SZ,
-                 (const BYTE*)value,
-                 (DWORD)((wcslen(value) + 1) * sizeof(wchar_t))
-             );
-
-    RegCloseKey(key);
-
-    if (result != ERROR_SUCCESS)
-        throw Win32Exception("Cannot write settings to registry");
-}
-
-void __cdecl Settings::RegistryDelete(const char *name, void *)
-{
-    const std::string subkey = Settings::GetRegistryPath();
-
-    HKEY key;
-    LONG result = RegOpenKeyExA
-                  (
-                      HKEY_CURRENT_USER,
-                      subkey.c_str(),
-                      0,
-                      KEY_SET_VALUE,
-                      &key
-                  );
-    if (result != ERROR_SUCCESS)
-        throw Win32Exception("Cannot delete settings from registry");
-
-    result = RegDeleteValueA(key, name);
-
-    RegCloseKey(key);
-
-    if (result != ERROR_SUCCESS)
-        throw Win32Exception("Cannot delete settings from registry");
-}
+//void __cdecl Settings::RegistryDelete(const char *name, void *)
+//{
+//    const std::string subkey = Settings::GetRegistryPath();
+//
+//    HKEY key;
+//    LONG result = RegOpenKeyExA
+//                  (
+//                      HKEY_CURRENT_USER,
+//                      subkey.c_str(),
+//                      0,
+//                      KEY_SET_VALUE,
+//                      &key
+//                  );
+//    if (result != ERROR_SUCCESS)
+//        throw Win32Exception("Cannot delete settings from registry");
+//
+//    result = RegDeleteValueA(key, name);
+//
+//    RegCloseKey(key);
+//
+//    if (result != ERROR_SUCCESS)
+//        throw Win32Exception("Cannot delete settings from registry");
+//}
 
 
-static int DoRegistryRead(HKEY root, const char *name, wchar_t *buf, size_t len)
-{
-    const std::string subkey = Settings::GetRegistryPath();
+//static int DoRegistryRead(HKEY root, const char *name, wchar_t *buf, size_t len)
+//{
+//    const std::string subkey = Settings::GetRegistryPath();
+//
+//    HKEY key;
+//    LONG result = RegOpenKeyExA
+//                  (
+//                      root,
+//                      subkey.c_str(),
+//                      0,
+//                      KEY_QUERY_VALUE,
+//                      &key
+//                  );
+//    if ( result != ERROR_SUCCESS )
+//    {
+//        if ( result == ERROR_FILE_NOT_FOUND )
+//            return 0;
+//        throw Win32Exception("Cannot read settings from registry");
+//    }
+//
+//    DWORD buflen = (DWORD)len;
+//    DWORD type;
+//    result = RegQueryValueEx
+//             (
+//                 key,
+//                 AnsiToWide(name).c_str(),
+//                 0,
+//                 &type,
+//                 (BYTE*)buf,
+//                 &buflen
+//             );
+//
+//    RegCloseKey(key);
+//
+//    if ( result != ERROR_SUCCESS )
+//    {
+//        if ( result == ERROR_FILE_NOT_FOUND )
+//            return 0;
+//        throw Win32Exception("Cannot read settings from registry");
+//    }
+//
+//    if ( type != REG_SZ )
+//    {
+//        // incorrect type -- pretend that the setting doesn't exist, it will
+//        // be newly written by WinSparkle anyway
+//        return 0;
+//    }
+//
+//    return 1;
+//}
 
-    HKEY key;
-    LONG result = RegOpenKeyExA
-                  (
-                      root,
-                      subkey.c_str(),
-                      0,
-                      KEY_QUERY_VALUE,
-                      &key
-                  );
-    if ( result != ERROR_SUCCESS )
-    {
-        if ( result == ERROR_FILE_NOT_FOUND )
-            return 0;
-        throw Win32Exception("Cannot read settings from registry");
-    }
-
-    DWORD buflen = (DWORD)len;
-    DWORD type;
-    result = RegQueryValueEx
-             (
-                 key,
-                 AnsiToWide(name).c_str(),
-                 0,
-                 &type,
-                 (BYTE*)buf,
-                 &buflen
-             );
-
-    RegCloseKey(key);
-
-    if ( result != ERROR_SUCCESS )
-    {
-        if ( result == ERROR_FILE_NOT_FOUND )
-            return 0;
-        throw Win32Exception("Cannot read settings from registry");
-    }
-
-    if ( type != REG_SZ )
-    {
-        // incorrect type -- pretend that the setting doesn't exist, it will
-        // be newly written by WinSparkle anyway
-        return 0;
-    }
-
-    return 1;
-}
-
-int __cdecl Settings::RegistryRead(const char *name, wchar_t *buf, size_t len, void *)
-{
-    size_t bytes = len * sizeof(wchar_t);
-    // Try reading from HKCU first. If that fails, look at HKLM too, in case
-    // some settings have globally set values (either by the installer or the
-    // administrator).
-    if (DoRegistryRead(HKEY_CURRENT_USER, name, buf, bytes))
-    {
-        return 1;
-    }
-    else
-    {
-        return DoRegistryRead(HKEY_LOCAL_MACHINE, name, buf, bytes);
-    }
-}
+//int __cdecl Settings::RegistryRead(const char *name, wchar_t *buf, size_t len, void *)
+//{
+//    size_t bytes = len * sizeof(wchar_t);
+//    // Try reading from HKCU first. If that fails, look at HKLM too, in case
+//    // some settings have globally set values (either by the installer or the
+//    // administrator).
+//    if (DoRegistryRead(HKEY_CURRENT_USER, name, buf, bytes))
+//    {
+//        return 1;
+//    }
+//    else
+//    {
+//        return DoRegistryRead(HKEY_LOCAL_MACHINE, name, buf, bytes);
+//    }
+//}
 
 namespace
 {
@@ -321,7 +321,7 @@ void Settings::DoWriteConfigValue(const char *name, const wchar_t *value)
 {
     CriticalSectionLocker lock(g_csConfigValues);
     
-    ms_configMethods.config_write(name, value, ms_configMethods.user_data);
+    //ms_configMethods.config_write(name, value, ms_configMethods.user_data);
 }
 
 std::wstring Settings::DoReadConfigValue(const char *name)
@@ -331,17 +331,19 @@ std::wstring Settings::DoReadConfigValue(const char *name)
     static const int bufferLength = 512;
     wchar_t buf[bufferLength];
 
-    if (ms_configMethods.config_read(name, buf, bufferLength, ms_configMethods.user_data))
-        return buf;
-    else
-        return std::wstring();
+    ////if (ms_configMethods.config_read(name, buf, bufferLength, ms_configMethods.user_data))
+    //    return buf;
+    //else
+    //    return std::wstring();
+
+    return std::wstring();
 }
 
 void Settings::DeleteConfigValue(const char *name)
 {
     CriticalSectionLocker lock(g_csConfigValues);
 
-    ms_configMethods.config_delete(name, ms_configMethods.user_data);
+    //ms_configMethods.config_delete(name, ms_configMethods.user_data);
 }
 
 void Settings::SetDSAPubKeyPem(const std::string &pem)
